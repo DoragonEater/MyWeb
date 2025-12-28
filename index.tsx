@@ -907,15 +907,16 @@ interface HobbyItem {
 }
 // Game & Anime Scrollable Lists
 function HobbySection() {
+  // 2. 明确 state 的类型
   const [hobbiesData, setHobbiesData] = useState<{
     games: HobbyItem[];
     anime: HobbyItem[];
-  }>(RESUME_DATA.hobbies);
-  const [loading, setLoading] = useState(true);
+  }>({
+    games: RESUME_DATA.hobbies.games as HobbyItem[],
+    anime: RESUME_DATA.hobbies.anime as HobbyItem[]
+  });
 
-  const { games, anime } = hobbiesData;
-  const [gameFilter, setGameFilter] = useState("ALL");
-  const [animeFilter, setAnimeFilter] = useState("ALL");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -923,14 +924,13 @@ function HobbySection() {
         const res = await fetch('/api/hobbies');
         if (res.ok) {
           const data = await res.json();
-          // 确保这里的数据结构匹配
           setHobbiesData({
             games: data.games || [],
             anime: data.anime || []
           });
         }
       } catch (error) {
-        console.log("Fetch failed, using static data.");
+        console.log("Fetch failed, using static fallback.");
       } finally {
         setLoading(false);
       }
@@ -938,18 +938,22 @@ function HobbySection() {
     fetchData();
   }, []);
 
-  // Extract unique types from games list
+  const { games, anime } = hobbiesData;
+  const [gameFilter, setGameFilter] = useState("ALL");
+  const [animeFilter, setAnimeFilter] = useState("ALL");
+
+  // 3. 在处理过滤逻辑时，确保 g.type 存在（使用 optional chaining 或 fallback）
   const gameTypes = ["ALL", ...Array.from(new Set(games.map(g => g.type || "Other")))];
   const filteredGames = gameFilter === "ALL" 
     ? games 
     : games.filter(g => g.type === gameFilter);
 
-  // Extract unique types from anime list
   const animeTypes = ["ALL", ...Array.from(new Set(anime.map(a => a.type || "Other")))];
   const filteredAnime = animeFilter === "ALL" 
     ? anime 
     : anime.filter(a => a.type === animeFilter);
   
+  // ... 下方的 return 部分保持不变 ...
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
       {/* Games Column */}
