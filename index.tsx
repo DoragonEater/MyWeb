@@ -900,10 +900,17 @@ function CampusExperience() {
     </div>
   );
 }
-
+interface HobbyItem {
+  name: string;
+  info: string;
+  type: string;
+}
 // Game & Anime Scrollable Lists
 function HobbySection() {
-  const [hobbiesData, setHobbiesData] = useState(RESUME_DATA.hobbies);
+  const [hobbiesData, setHobbiesData] = useState<{
+    games: HobbyItem[];
+    anime: HobbyItem[];
+  }>(RESUME_DATA.hobbies);
   const [loading, setLoading] = useState(true);
 
   const { games, anime } = hobbiesData;
@@ -911,28 +918,23 @@ function HobbySection() {
   const [animeFilter, setAnimeFilter] = useState("ALL");
 
   useEffect(() => {
-    // Fetch data from MySQL endpoint when component mounts
     const fetchData = async () => {
       try {
         const res = await fetch('/api/hobbies');
         if (res.ok) {
           const data = await res.json();
-          // Expecting data structure { games: [...], anime: [...] }
-          if (data.games || data.anime) {
-            setHobbiesData(prev => ({
-              ...prev,
-              games: data.games || prev.games,
-              anime: data.anime || prev.anime
-            }));
-          }
+          // 确保这里的数据结构匹配
+          setHobbiesData({
+            games: data.games || [],
+            anime: data.anime || []
+          });
         }
       } catch (error) {
-        console.log("Failed to fetch hobbies from API, using static data fallback.");
+        console.log("Fetch failed, using static data.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
