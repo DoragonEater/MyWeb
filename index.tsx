@@ -12,7 +12,7 @@ const RESUME_DATA = {
     location: "计算机科学与技术",
     email: "1337490125@qq.com",
     phone: "15033895942",
-    avatar: "/images/证件照.jpg",
+    avatar: "/images/myavatar.jpg",
     // 在这里修改顶部的背景图片 👇
     headerBackground: "/images/bg.jpg", 
     summary: "具备在Unity中快速验证玩法的能力，能独立产出白盒关卡。熟悉日式叙事风格与用户痛点，持有日语N1证书。热衷于ACT战斗机制与TRPG规则设计，追求“好玩”与“美感”的极致平衡。",
@@ -30,9 +30,9 @@ const RESUME_DATA = {
       period: "2024.09 - 至今",
       description: "作为河北省首个游戏开发社团联合创始人之一，管理策划与程序部门。制定教学大纲，帮助新生入门。策划“游戏红黑榜”活动，为社团带来千人次曝光。",
       images: [
-        "/images/教学.jpg",
-        "/images/桌游.jpg",
-        "/images/红黑榜.jpg"
+        "/images/jx.jpg",
+        "/images/game.jpg",
+        "/images/hhb.jpg"
       ]
     },
     {
@@ -41,8 +41,8 @@ const RESUME_DATA = {
       period: "2024.09 - 2025.02",
       description: "入选策划方向公开课，系统学习游戏策划与运营知识并顺利结业。",
       images: [
-        "/images/腾讯游戏学堂.jpg",
-        "/images/腾讯开局一课.jpg"
+        "/images/txyxxt.jpg",
+        "/images/txkjyk.jpg"
       ]
     }
   ],
@@ -75,7 +75,7 @@ const RESUME_DATA = {
         "编写踏板机关、旋转激光阵等核心关卡逻辑。"
       ],
       link: "https://ncnuj2teeteo.feishu.cn/wiki/XSibwQaztifFGpkEyKXcHkQVnqd?from=from_copylink",
-      image: "/images/图书馆项目.jpg"
+      image: "/images/tsgxm.jpg"
     },
     {
       id: "trpg",
@@ -90,7 +90,7 @@ const RESUME_DATA = {
         "解决Caster职介压制问题，优化Assassin背刺收益。"
       ],
       link: "https://www.bilibili.com/opus/1137610590500421636",
-      image: "/images/规则.png"
+      image: "/images/gz.png"
     }
   ],
   hobbies: {
@@ -125,9 +125,9 @@ const RESUME_DATA = {
     ]
   },
   analysis: [
-    { title: "只狼战斗系统拆解", link: "https://ncnuj2teeteo.feishu.cn/wiki/XTZBwZDrOiUKnYkFeOzciYEXnqc", image: "/images/只狼.png" },
-    { title: "角色设计作品集", link: "https://ncnuj2teeteo.feishu.cn/wiki/Wr6uwqVrMidtzIkq1mKcmLxInwe", image: "/images/角色设计.png" },
-    { title: "巨剑蓄力攻击思考", link: "https://ncnuj2teeteo.feishu.cn/wiki/AJ9zwBmw8il81GkQkjdcbrALn1e", image: "/images/巨剑.png" }
+    { title: "只狼战斗系统拆解", link: "https://ncnuj2teeteo.feishu.cn/wiki/XTZBwZDrOiUKnYkFeOzciYEXnqc", image: "/images/sekiro.png" },
+    { title: "角色设计作品集", link: "https://ncnuj2teeteo.feishu.cn/wiki/Wr6uwqVrMidtzIkq1mKcmLxInwe", image: "/images/sj.png" },
+    { title: "巨剑蓄力攻击思考", link: "https://ncnuj2teeteo.feishu.cn/wiki/AJ9zwBmw8il81GkQkjdcbrALn1e", image: "/images/jj.png" }
   ]
 };
 
@@ -252,15 +252,24 @@ function MouseEffects() {
       ctx.clearRect(0, 0, width, height);
 
       // 1. Draw Trail
-      if (trail.length > TRAIL_LENGTH) {
-        trail.shift();
-      }
+      
+      // Update life
       for (let i = 0; i < trail.length; i++) {
         trail[i].life *= TRAIL_DECAY;
       }
-      if (trail.length > 2) {
+
+      // Remove dead points (fixes persistent trail bug)
+      while (trail.length > 0 && trail[0].life < 0.05) {
+        trail.shift();
+      }
+
+      // Length limit check (just in case)
+      if (trail.length > TRAIL_LENGTH) {
+        trail.shift();
+      }
+
+      if (trail.length > 1) { // Need at least 2 points to draw a line
         ctx.beginPath();
-        // White trail as requested
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
@@ -391,8 +400,6 @@ function Sidebar() {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
-    // Optional: close sidebar on mobile or always after click if preferred
-    // setIsOpen(false); 
   };
 
   return (
@@ -713,7 +720,6 @@ function SkillsSection() {
   );
 }
 
-// Updated Project Card: Left Text, Right Image
 function ProjectCard({ project }: { project: typeof RESUME_DATA.projects[0], key?: any }) {
   return (
     <div className="glass-panel" style={{ 
@@ -812,7 +818,7 @@ function ImageCarousel({ images }: { images: string[] }) {
   if (!images || images.length === 0) return null;
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '300px', marginTop: '20px', overflow: 'hidden', borderRadius: '2px', border: '1px solid var(--border)' }}>
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       {images.length > 1 && (
         <>
           <button 
@@ -845,90 +851,102 @@ function ImageCarousel({ images }: { images: string[] }) {
   );
 }
 
-// Campus Carousel Component (Outer)
-function CampusExperience() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const items = RESUME_DATA.experience;
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % items.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + items.length) % items.length);
-  };
-
-  const currentItem = items[currentIndex];
-
+// Experience Card Component (Similar to ProjectCard but for Experience)
+function ExperienceCard({ item }: { item: typeof RESUME_DATA.experience[0], key?: any }) {
   return (
-    <div style={{ position: 'relative', marginBottom: '60px' }}>
-      <div className="glass-panel" style={{ padding: '40px', borderRadius: '2px', minHeight: '300px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-          <div>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--text-main)' }}>{currentItem.role}</h3>
-            <div style={{ color: 'var(--accent)', fontSize: '1.1rem', marginTop: '4px' }}>{currentItem.company}</div>
+    <div className="glass-panel" style={{ 
+      marginBottom: '40px',
+      display: 'flex',
+      flexDirection: 'column',
+      borderRadius: '2px',
+      overflow: 'hidden',
+    }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', minHeight: '300px' }}>
+        {/* Left: Text */}
+        <div style={{ flex: '1 1 400px', padding: '32px', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
+             <h3 style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--text-main)' }}>{item.role}</h3>
+             <span style={{ fontSize: '0.85rem', color: 'var(--gold)', fontFamily: 'monospace' }}>{item.period}</span>
           </div>
-          <div style={{ color: 'var(--text-secondary)', fontFamily: 'monospace' }}>{currentItem.period}</div>
+          <div style={{ marginBottom: '16px', color: 'var(--accent)', fontSize: '0.95rem', fontWeight: '600' }}>{item.company}</div>
+          
+          <p style={{ lineHeight: '1.8', color: '#ccc' }}>
+            {item.description}
+          </p>
         </div>
-        <p style={{ fontSize: '1.05rem', lineHeight: '1.8', color: '#ccc', maxWidth: '800px', marginBottom: '20px' }}>
-          {currentItem.description}
-        </p>
-        
-        {/* Nested Image Carousel for Proof */}
-        {currentItem.images && <ImageCarousel images={currentItem.images} />}
-        
-        {/* Pagination Dots for Outer Carousel */}
-        <div style={{ display: 'flex', gap: '8px', marginTop: '30px', justifyContent: 'center' }}>
-          {items.map((_, idx) => (
-            <div key={idx} style={{ 
-              width: '8px', height: '8px', borderRadius: '50%', 
-              backgroundColor: idx === currentIndex ? 'var(--accent)' : 'var(--border)',
-              transition: 'background-color 0.3s'
-            }} />
-          ))}
+
+        {/* Right: Images */}
+        <div style={{ flex: '1 1 300px', minHeight: '250px', position: 'relative' }}>
+          {item.images && item.images.length > 0 ? (
+             <ImageCarousel images={item.images} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333' }}>
+              No Image
+            </div>
+          )}
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Navigation Buttons */}
-      <button 
-        onClick={prevSlide}
-        style={{
-          position: 'absolute', left: '-20px', top: '50%', transform: 'translateY(-50%)',
-          width: '40px', height: '40px', borderRadius: '50%',
-          background: 'var(--bg-secondary)', border: '1px solid var(--border)', color: 'var(--text-main)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.5)', zIndex: 2
-        }}
-      >
-        <IconArrowLeft />
-      </button>
-      <button 
-        onClick={nextSlide}
-        style={{
-          position: 'absolute', right: '-20px', top: '50%', transform: 'translateY(-50%)',
-          width: '40px', height: '40px', borderRadius: '50%',
-          background: 'var(--bg-secondary)', border: '1px solid var(--border)', color: 'var(--text-main)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.5)', zIndex: 2
-        }}
-      >
-        <IconArrowRight />
-      </button>
+// Campus Experience Component -> List of ExperienceCards
+function CampusExperience() {
+  return (
+    <div style={{ marginBottom: '20px' }}>
+      {RESUME_DATA.experience.map((item, index) => (
+        <ExperienceCard key={index} item={item} />
+      ))}
     </div>
   );
 }
 
 // Game & Anime Scrollable Lists
 function HobbySection() {
-  const { games, anime } = RESUME_DATA.hobbies;
-  const [filter, setFilter] = useState("ALL");
+  const [hobbiesData, setHobbiesData] = useState(RESUME_DATA.hobbies);
+  const [loading, setLoading] = useState(true);
+
+  const { games, anime } = hobbiesData;
+  const [gameFilter, setGameFilter] = useState("ALL");
+  const [animeFilter, setAnimeFilter] = useState("ALL");
+
+  useEffect(() => {
+    // Fetch data from MySQL endpoint when component mounts
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/api/hobbies');
+        if (res.ok) {
+          const data = await res.json();
+          // Expecting data structure { games: [...], anime: [...] }
+          if (data.games || data.anime) {
+            setHobbiesData(prev => ({
+              ...prev,
+              games: data.games || prev.games,
+              anime: data.anime || prev.anime
+            }));
+          }
+        }
+      } catch (error) {
+        console.log("Failed to fetch hobbies from API, using static data fallback.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Extract unique types from games list
   const gameTypes = ["ALL", ...Array.from(new Set(games.map(g => g.type || "Other")))];
-
-  const filteredGames = filter === "ALL" 
+  const filteredGames = gameFilter === "ALL" 
     ? games 
-    : games.filter(g => g.type === filter);
+    : games.filter(g => g.type === gameFilter);
+
+  // Extract unique types from anime list
+  const animeTypes = ["ALL", ...Array.from(new Set(anime.map(a => a.type || "Other")))];
+  const filteredAnime = animeFilter === "ALL" 
+    ? anime 
+    : anime.filter(a => a.type === animeFilter);
   
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
@@ -947,10 +965,10 @@ function HobbySection() {
             <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--gold)' }}>游戏阅历</h3>
           </div>
           
-          {/* Custom Dropdown for Filtering */}
+          {/* Custom Dropdown for Filtering Games */}
           <select 
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            value={gameFilter}
+            onChange={(e) => setGameFilter(e.target.value)}
             style={{
               background: '#222',
               color: 'var(--text-main)',
@@ -983,17 +1001,50 @@ function HobbySection() {
 
       {/* Anime Column */}
       <div className="glass-panel" style={{ borderRadius: '2px', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '400px' }}>
-        <div style={{ padding: '16px 24px', background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <IconSparkles /> 
-          <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--gold)' }}>二次元 & 动漫</h3>
+        <div style={{ 
+          padding: '16px 24px', 
+          background: 'rgba(0,0,0,0.3)', 
+          borderBottom: '1px solid var(--border)', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <IconSparkles /> 
+            <h3 style={{ fontSize: '1.1rem', fontWeight: '600', color: 'var(--gold)' }}>二次元 & 动漫</h3>
+          </div>
+
+          {/* Custom Dropdown for Filtering Anime */}
+          <select 
+            value={animeFilter}
+            onChange={(e) => setAnimeFilter(e.target.value)}
+            style={{
+              background: '#222',
+              color: 'var(--text-main)',
+              border: '1px solid var(--border)',
+              borderRadius: '2px',
+              padding: '4px 8px',
+              fontSize: '0.85rem',
+              fontFamily: 'inherit',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            {animeTypes.map(type => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
         </div>
+
         <div className="fade-bottom-mask" style={{ flex: 1, overflowY: 'auto', padding: '20px 24px' }}>
-          {anime.map((a, i) => (
+          {filteredAnime.length > 0 ? filteredAnime.map((a, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', borderBottom: '1px dashed #333', paddingBottom: '4px' }}>
               <span style={{ color: 'var(--text-main)' }}>{a.name}</span>
               <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{a.info}</span>
             </div>
-          ))}
+          )) : (
+            <div style={{ color: 'var(--text-secondary)', textAlign: 'center', marginTop: '20px' }}>暂无此类内容</div>
+          )}
         </div>
       </div>
     </div>
@@ -1081,7 +1132,7 @@ function App() {
       </Section>
 
       <footer style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-secondary)', fontSize: '0.9rem', borderTop: '1px solid var(--border)', marginTop: '40px', background: '#111' }}>
-        <p>&copy; {new Date().getFullYear()} {RESUME_DATA.profile.name} | 迷いば、敗れる。</p>
+        <p>&copy; {new Date().getFullYear()} {RESUME_DATA.profile.name} | 犹豫，就会败北。</p>
       </footer>
     </div>
   );
