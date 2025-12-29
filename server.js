@@ -11,25 +11,30 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Database connection pool
+// Database connection pool
 const pool = mysql.createPool({
-  uri: process.env.MYSQL_URL || 'mysql://root:password@localhost:3306/resume_db',
+  // 优先使用环境变量中的完整 URL
+  uri: process.env.MYSQL_URL, 
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  // 增加连接超时处理
+  connectTimeout: 10000 
 });
-
+// API Endpoint to fetch hobbies
 // API Endpoint to fetch hobbies
 app.get('/api/hobbies', async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM hobbies');
+    // 建议加上 ORDER BY id DESC 或 created_at，让新录入的内容排在前面
+    const [rows] = await pool.query('SELECT * FROM hobbies ORDER BY id ASC');
     
-    // Transform flat rows into categorized structure
     const games = rows.filter(r => r.category === 'game').map(r => ({
       name: r.name,
       info: r.info,
       type: r.type
     }));
     
+    // 你的截图里暂时只看到了 game，如果有 anime 类别也会自动过滤出来
     const anime = rows.filter(r => r.category === 'anime').map(r => ({
       name: r.name,
       info: r.info,
@@ -42,7 +47,6 @@ app.get('/api/hobbies', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 // Serve static files from the 'dist' directory (Frontend build)
 // Note: On Zeabur, you should build your frontend into the 'dist' folder
 app.use(express.static(path.join(__dirname, 'dist')));
