@@ -13,13 +13,11 @@ const __dirname = path.dirname(__filename);
 // Database connection pool
 // Database connection pool
 const pool = mysql.createPool({
-  // 优先使用环境变量中的完整 URL
-  uri: process.env.MYSQL_URL, 
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  // 增加连接超时处理
-  connectTimeout: 10000 
+  host: 'mysql.zeabur.internal',
+  user: 'root',
+  password: 'AXRE6y0L9b3lxZsB57218oJkweWUYKm4', // 确保这个是从 image_29ed85.jpg 复制的真实密码
+  database: 'resume_db',
+  port: 3306
 });
 // API Endpoint to fetch hobbies
 // API Endpoint to fetch hobbies
