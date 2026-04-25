@@ -279,6 +279,7 @@ export const RESUME_DATA: IResumeData = {
     { title: "只狼战斗系统拆解", link: "https://ncnuj2teeteo.feishu.cn/wiki/XTZBwZDrOiUKnYkFeOzciYEXnqc", image: "/images/sekiro.png" },
     { title: "打击感的思考", link: "https://ncnuj2teeteo.feishu.cn/wiki/P1Plwi4hOiBVTSkLfUBcVuXpnFc?from=from_copylink", image: "/images/djg.png" },
     { title: "角色设计作品集", link: "https://ncnuj2teeteo.feishu.cn/wiki/Wr6uwqVrMidtzIkq1mKcmLxInwe", image: "/images/sj.png" },
+    { title: "角色设计思路（以英雄联盟为例）", link: "https://ncnuj2teeteo.feishu.cn/wiki/RWwzww0LZiqfftkisjPcXDmhntd?from=from_copylink", image: "/images/jssj.png" },
     { title: "巨剑蓄力攻击思考", link: "https://ncnuj2teeteo.feishu.cn/wiki/AJ9zwBmw8il81GkQkjdcbrALn1e", image: "/images/jj.png" }
   ]
 };
